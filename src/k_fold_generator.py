@@ -1,5 +1,6 @@
 import sys
 
+# The code draws inspiration from: http://goo.gl/aSbVNV
 def k_fold_generator(x, k, folder):
     subset_size = len(x) / k
     for i in range(k):
