@@ -87,3 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Ignore training and test data sets
+train*.txt
+test*.txt

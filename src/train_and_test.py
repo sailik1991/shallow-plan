@@ -11,7 +11,7 @@ pediction_set_size = 10
 window_size = 1
 
 def remove_random_actions(plan):
-    blank_count = int(floor(len(plan) * blank_percentage + 0.5))
+    blank_count = int(ceil(len(plan) * blank_percentage + 0.5))
     incomplete_plan = deepcopy(plan)
     indices = []
     for i in range(blank_count):
@@ -67,27 +67,27 @@ def min_uncertainty_distance_in_window_size(indices):
     res = [ idx[i+window_size]-idx[i] for i in xrange(len(idx)) if i+window_size < len(idx) ]
     return min(res)
 
-def train_and_test(domain, shouldTrain):
+def train_and_test(domain, shouldTrain, set_number):
     '''
     The function trains a model on training data and then tests the models accuracy on the testing data.
     Since training is time consuming, we save the model and load it later for further testing
     '''
 
-    print "\n=== Domain : %s ===\n" % domain
+    print "\n=== Set : %s ===\n" % str(set_number)
 
     # Train a model based on training data
     if shouldTrain == True:
-        sentences = models.word2vec.LineSentence(domain+'/train.txt')
-        model = models.Word2Vec(sentences=sentences, min_count=1, workers=6, hs=1, window=window_size, iter=1500)
+        sentences = models.word2vec.LineSentence(domain+'/train'+str(set_number)+'.txt')
+        model = models.Word2Vec(sentences=sentences, min_count=1, workers=4, hs=1, window=window_size, iter=10)
         model.save(domain+'/model.txt')
     else:
         # OR load a mode
-        model = models.Word2Vec.load(domain+'/model.txt')
+        model = models.Word2Vec.load(domain+'/model'+str(set_number)+'.txt')
 
     print "Training : COMPLETE!"
 
     # Evaluate model on test data
-    plans = open(domain+'/test.txt').read().split("\n")
+    plans = open(domain+'/test'+str(set_number)+'.txt').read().split("\n")
     list_of_actions = [[unicode(actn, "utf-8") for actn in plan_i.split()] for plan_i in plans]
     actions = model.vocab.keys()
 
@@ -95,7 +95,7 @@ def train_and_test(domain, shouldTrain):
     total = 0
 
     print "Testing : RUNNING . . ."
-
+    list_of_actions = [x for x in list_of_actions if len(x) != 0]
     for itr in xrange(len(list_of_actions)):
 
         plan = list_of_actions[itr]
@@ -132,15 +132,28 @@ def train_and_test(domain, shouldTrain):
 
     sys.stdout.write( "\r\rTesting : COMPLETE!\n")
     sys.stdout.flush()
-    print "\nTotal unknown actions: %s; Total correct predictions: %s" % (str(total), str(correct))
-    print "Accuracy: %s\n" % str( float(correct*100)/total )
+    print "\nUnknown actions: %s; Correct predictions: %s" % (str(total), str(correct))
+    print "Set Accuracy: %s\n" % str( float(correct*100)/total )
+    return total, correct
 
 def main(argv):
     #print argv
     domain = argv[0]
     train = True if len(argv)==2 and argv[1]=='t' else False
+    k = 10
 
-    train_and_test( domain, train )
+    print "\n=== Domain : %s ===\n" % domain
+
+    total_unknown_actions = 0
+    total_correct_predictions = 0
+    for i in range(k):
+        ua, cp = train_and_test( domain, train, i )
+        total_unknown_actions += ua
+        total_correct_predictions += cp
+
+    print "\n==== FINAL STATISTICS ===="
+    print "\nTotal unknown actions: %s; Total correct predictions: %s" % (str(total_unknown_actions), str(total_correct_predictions))
+    print "ACCURACY: %s\n" % str( float(total_correct_predictions*100)/total_unknown_actions )
 
 if __name__ == "__main__":
     main(sys.argv[1:])

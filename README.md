@@ -21,10 +21,23 @@ $> python train_and_test.py blocks
 
 === Domain : blocks ===
 
-Training : COMPLETE!
-Testing : RUNNING . . .
-Testing : COMPLETE!
+==== FINAL STATISTICS ====
 
-Total unknown actions: 1436; Total correct predictions: 612
-Accuracy: 42.6183844011
+Total unknown actions: 19097; Total correct predictions: 9882
+ACCURACY: 51.7463475939
+
+=== Domain : depots ===
+
+==== FINAL STATISTICS ====
+
+Total unknown actions: 15028; Total correct predictions: 8192
+ACCURACY: 54.511578387
+
+=== Domain : driverlog ===
+
+==== FINAL STATISTICS ====
+
+Total unknown actions: 13614; Total correct predictions: 7041
+ACCURACY: 51.7188188629
+
 ```
