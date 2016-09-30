@@ -1,4 +1,5 @@
-from bf import *
+import bf
+import dup
 
 def main(argv):
     #print argv
@@ -11,7 +12,7 @@ def main(argv):
     total_unknown_actions = 0
     total_correct_predictions = 0
     for i in range(k):
-        ua, cp = train_and_test( domain, train, i )
+        ua, cp = dup.train_and_test( domain, train, i )
         total_unknown_actions += ua
         total_correct_predictions += cp
 

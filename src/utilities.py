@@ -5,11 +5,13 @@ from math import ceil,floor
 from itertools import permutations
 import random
 import sys, getopt
+import random
 
 blank_percentage = 0.05
 pediction_set_size = 10
 window_size = 1
 
+""" NEEDED FOR TRAINING """
 def remove_random_actions(plan):
     blank_count = int(ceil(len(plan) * blank_percentage + 0.5))
     incomplete_plan = deepcopy(plan)
@@ -25,6 +27,23 @@ def remove_random_actions(plan):
             indices.append(missing_action_index)
     return blank_count, indices, incomplete_plan
 
+""" NEEDED FOR DUP """
+def getActionsForBlanks(T):
+    index = []
+    for i in xrange(len(T)):
+        v = max(T[i])
+        index.append( random.choice([j for j in xrange(len(T[i]) if T[i][j] == v]) )
+    return index
+
+def verify(T, indices, actions, plan):
+    correct = 0.0
+    for i in xrange(len(T)):
+        acts = sorted( range(len(T[i])), key=lambda x:T[i][x] )[-1*prediction_set_size:]
+        if plan[indices[i]] in acts:
+            correct += 1.0
+    return correct
+
+""" NEEDED FOR BRUTE FORCE """
 # p = permutation of actions
 # ip = incomplete plan
 def getTentativePlan(p, ip, indices):
@@ -46,7 +65,7 @@ def permuteOverMissingActions(actions, blank_count, indices, incomplete_plan):
         tentative_plans.append(getTentativePlan(p, incomplete_plan, indices))
     return action_set, tentative_plans
 
-def predictAndVerify(indices, tentative_plans, action_set):
+def predictAndVerify(indices, tentative_plans, action_set, plan):
     for i in range(len(indices)):
         window_sized_plans = []
         for tp in tentative_plans:
@@ -68,8 +87,3 @@ def min_uncertainty_distance_in_window_size(indices):
     idx = sorted(idx)
     res = [ idx[i+window_size]-idx[i] for i in xrange(len(idx)) if i+window_size < len(idx) ]
     return min(res)
-
-
-
-
-

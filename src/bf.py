@@ -54,7 +54,7 @@ def train_and_test(domain, shouldTrain, setNumber):
         blank_count, indices, incomplete_plan = remove_random_actions(plan)
         total += blank_count
         action_set, tentative_plans = permuteOverMissingActions(actions, blank_count, indices, incomplete_plan)
-        correct += predictAndVerify(indices, tentative_plans, action_set)
+        correct += predictAndVerify(indices, tentative_plans, action_set, plan)
 
         """
         for i in indices:
