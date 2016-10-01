@@ -91,3 +91,6 @@ ENV/
 # Ignore training and test data sets
 train*.txt
 test*.txt
+
+# Ignore swp files
+.*.swp

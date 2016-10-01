@@ -47,12 +47,14 @@ def train_and_test(domain, shouldTrain, setNumber):
         plan = list_of_actions[itr]
 
         blank_count, indices, incomplete_plan = remove_random_actions(plan)
-        total += blank_count
+        print blank_count
+	print "length of indices - " + str(len(indices))
+	total += blank_count
         
         """ DUP algorithm """
         T = []
         for i in xrange(blank_count):
-            t.append([1.0/len(actions) for j in xrange(len(actions))])
+            T.append([1.0/len(actions) for j in xrange(len(actions))])
             
         i = 0
         while True:
@@ -61,9 +63,9 @@ def train_and_test(domain, shouldTrain, setNumber):
                 break
             
             action_index = getActionsForBlanks(T)
-            for k in len(blank_count):
+            for k in xrange(blank_count):
                 T[k][action_index[k]] += gamma*window_size*2
-                for w in xrange( max(0,indices[k]-i-window_size), min(i+window_size+1,len(plan)) ):
+                for w in xrange( max(0,indices[k]-window_size), min(indices[k]+window_size+1,len(plan)) ):
                     if w in indices:
                         T[indices.index(w)][action_index[indices.index(w)]] += gamma*window_size*2
         

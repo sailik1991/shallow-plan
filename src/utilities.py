@@ -32,13 +32,13 @@ def getActionsForBlanks(T):
     index = []
     for i in xrange(len(T)):
         v = max(T[i])
-        index.append( random.choice([j for j in xrange(len(T[i]) if T[i][j] == v]) )
+        index.append( random.choice([j for j in xrange(len(T[i])) if T[i][j] == v]) )
     return index
 
 def verify(T, indices, actions, plan):
     correct = 0.0
     for i in xrange(len(T)):
-        acts = sorted( range(len(T[i])), key=lambda x:T[i][x] )[-1*prediction_set_size:]
+        acts = sorted( range(len(T[i])), key=lambda x:T[i][x] )[-1*pediction_set_size:]
         if plan[indices[i]] in acts:
             correct += 1.0
     return correct
