@@ -9,7 +9,7 @@ import random
 
 blank_percentage = 0.05
 pediction_set_size = 10
-window_size = 1
+window_size = 5
 
 """ NEEDED FOR TRAINING """
 def remove_random_actions(plan):
@@ -25,7 +25,7 @@ def remove_random_actions(plan):
         else:
             incomplete_plan[ missing_action_index ] = u''
             indices.append(missing_action_index)
-    return blank_count, indices, incomplete_plan
+    return len(indices), indices, incomplete_plan
 
 """ NEEDED FOR DUP """
 def getActionsForBlanks(T):
@@ -38,8 +38,9 @@ def getActionsForBlanks(T):
 def verify(T, indices, actions, plan):
     correct = 0.0
     for i in xrange(len(T)):
-        acts = sorted( range(len(T[i])), key=lambda x:T[i][x] )[-1*pediction_set_size:]
-        if plan[indices[i]] in acts:
+        predicted_action_indices = sorted( range(len(T[i])), key=lambda x:T[i][x] )[-1*pediction_set_size:]
+        predicted_actions = [actions[j] for j in predicted_action_indices]
+        if plan[indices[i]] in predicted_actions:
             correct += 1.0
     return correct
 
